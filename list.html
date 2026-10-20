@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin - {{ cfg.title }}{% endblock %}
+{% block content %}
+{% include "admin/_nav.html" %}
+<h1>{{ cfg.title }}</h1>
+<p><a class="btn" href="{{ url_for('admin_add', key=key) }}">+ Add new</a></p>
+
+<input type="search" class="filter" data-filter="admin-table" placeholder="Filter rows...">
+
+<div class="scroll">
+<table id="admin-table">
+  <thead>
+    <tr>
+      {% for c in cfg.columns %}<th data-sort="{{ 'num' if c.num else '' }}">{{ c.label }}</th>{% endfor %}
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      {% for c in cfg.columns %}
+        {% set v = r[c.name] %}
+        <td>{{ v.isoformat() if v.isoformat is defined else v }}</td>
+      {% endfor %}
+      <td class="actions">
+        <a href="{{ url_for('admin_edit', key=key, pk=r[cfg.pk]) }}">Edit</a>
+        <form method="post" action="{{ url_for('admin_delete', key=key, pk=r[cfg.pk]) }}"
+              data-confirm="Delete this row permanently?" class="inline">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button type="submit" class="danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

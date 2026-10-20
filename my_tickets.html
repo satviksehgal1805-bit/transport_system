@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}My tickets{% endblock %}
+{% block content %}
+<h1>My tickets</h1>
+
+{% if passenger %}
+  <p>
+    {{ passenger.name }} ({{ passenger.email }})
+    <form method="post" action="{{ url_for('forget') }}" class="inline">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button type="submit">Not you?</button>
+    </form>
+  </p>
+
+  {% if tickets %}
+    <input type="search" class="filter" data-filter="tickets-table"
+           placeholder="Filter by route, bus or date...">
+    <div class="scroll">
+    <table id="tickets-table">
+      <thead>
+        <tr>
+          <th data-sort="num">Ticket</th><th data-sort>Date</th><th data-sort>Route</th>
+          <th data-sort>Bus</th><th data-sort="num">Seat</th><th data-sort>Status</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for t in tickets %}
+        <tr>
+          <td>{{ t.ticket_id }}</td>
+          <td>{{ t.travel_date.isoformat() }}</td>
+          <td>{{ t.route_name }}<br><span class="muted">{{ t.start_point }} &rarr; {{ t.end_point }}</span></td>
+          <td><a href="{{ url_for('bus_detail', bus_id=t.bus_id) }}">{{ t.bus_number }}</a></td>
+          <td>{{ t.seat_number }}</td>
+          <td>{{ 'Upcoming' if t.travel_date >= today else 'Past' }}</td>
+          <td class="actions">
+            {% if t.travel_date >= today %}
+            <form method="post" action="{{ url_for('cancel_ticket', ticket_id=t.ticket_id) }}"
+                  data-confirm="Cancel ticket #{{ t.ticket_id }}?" class="inline">
+              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <button type="submit" class="danger">Cancel</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  {% else %}
+    <p class="muted">No tickets yet. <a href="{{ url_for('routes_list') }}">Browse routes</a> to book one.</p>
+  {% endif %}
+
+{% else %}
+  <p class="muted">Enter the email and phone number you booked with.</p>
+  {% if error %}<p class="flash error">{{ error }}</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label class="field">Email <input type="email" name="email" required></label>
+    <label class="field">Phone <input type="tel" name="phone" required></label>
+    <button type="submit">Show my tickets</button>
+  </form>
+{% endif %}
+{% endblock %}

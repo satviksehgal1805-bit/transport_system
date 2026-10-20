@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Bus {{ bus.bus_number }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('route_detail', route_id=bus.route_id) }}">&larr; {{ bus.route_name }}</a></p>
+<h1>Bus {{ bus.bus_number }}</h1>
+<dl>
+  <dt>Route</dt><dd><a href="{{ url_for('route_detail', route_id=bus.route_id) }}">{{ bus.route_name }}</a></dd>
+  <dt>From / To</dt><dd>{{ bus.start_point }} &rarr; {{ bus.end_point }}</dd>
+  <dt>Seats</dt><dd>{{ bus.capacity }}</dd>
+</dl>
+
+<h2>Book a seat</h2>
+{% if errors %}
+  <ul class="errors">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+{% endif %}
+
+<form method="post" action="{{ url_for('book', bus_id=bus.bus_id) }}">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <div class="book-grid">
+    <div>
+      <label class="field">Travel date
+        <input type="date" id="travel_date" name="travel_date" required
+               min="{{ today }}" max="{{ last_day }}"
+               value="{{ values.get('travel_date') or today }}">
+      </label>
+      <p id="seat-status" class="muted">Loading seats...</p>
+      <div id="seatmap" data-api="{{ url_for('api_seats', bus_id=bus.bus_id) }}"
+           data-capacity="{{ bus.capacity }}"></div>
+      <p class="muted">
+        <span class="sw free"></span>Free
+        <span class="sw taken"></span>Taken
+        <span class="sw pick"></span>Your pick
+      </p>
+    </div>
+    <div>
+      <label class="field">Seat number (click a seat, or type it)
+        <input type="number" id="seat_number" name="seat_number" min="1" max="{{ bus.capacity }}"
+               required value="{{ values.get('seat_number', '') }}">
+      </label>
+      <label class="field">Name
+        <input type="text" name="name" maxlength="100" required value="{{ values.get('name', '') }}">
+      </label>
+      <label class="field">Email
+        <input type="email" name="email" maxlength="100" required value="{{ values.get('email', '') }}">
+      </label>
+      <label class="field">Phone
+        <input type="tel" name="phone" required value="{{ values.get('phone', '') }}">
+      </label>
+      <button type="submit">Book ticket</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

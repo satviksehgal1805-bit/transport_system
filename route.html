@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ route.route_name }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('routes_list') }}">&larr; All routes</a></p>
+<h1>{{ route.route_name }}</h1>
+<dl>
+  <dt>From</dt><dd>{{ route.start_point }}</dd>
+  <dt>To</dt><dd>{{ route.end_point }}</dd>
+</dl>
+
+<h2>Buses on this route</h2>
+{% if buses %}
+<div class="scroll">
+<table id="route-buses">
+  <thead><tr><th data-sort>Bus number</th><th data-sort="num">Seats</th><th></th></tr></thead>
+  <tbody>
+  {% for b in buses %}
+    <tr data-href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">
+      <td><a href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">{{ b.bus_number }}</a></td>
+      <td>{{ b.capacity }}</td>
+      <td><a class="btn" href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">Pick a seat</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+  <p class="muted">No buses are assigned to this route yet.</p>
+{% endif %}
+{% endblock %}

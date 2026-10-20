@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+{% include "admin/_nav.html" %}
+<h1>Admin dashboard</h1>
+
+<div class="stats">
+  <a class="stat" href="{{ url_for('admin_list', key='passengers') }}"><b>{{ counts.passengers }}</b> passengers</a>
+  <a class="stat" href="{{ url_for('admin_list', key='routes') }}"><b>{{ counts.routes }}</b> routes</a>
+  <a class="stat" href="{{ url_for('admin_list', key='buses') }}"><b>{{ counts.buses }}</b> buses</a>
+  <a class="stat" href="{{ url_for('admin_list', key='tickets') }}"><b>{{ counts.tickets }}</b> tickets</a>
+</div>
+
+<h2>Upcoming bookings per bus</h2>
+<p class="muted">Today and later. Click a column title to sort.</p>
+<div class="scroll">
+<table id="load-table">
+  <thead>
+    <tr><th data-sort>Bus</th><th data-sort>Route</th><th data-sort="num">Seats</th><th data-sort="num">Booked</th></tr>
+  </thead>
+  <tbody>
+  {% for b in load %}
+    <tr data-href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">
+      <td>{{ b.bus_number }}</td><td>{{ b.route_name }}</td><td>{{ b.capacity }}</td><td>{{ b.booked }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

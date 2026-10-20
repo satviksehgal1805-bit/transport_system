@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Plan your trip</h1>
+<p class="muted">Find a route, pick a bus, choose your seat.</p>
+
+<form action="{{ url_for('routes_list') }}" method="get">
+  <input type="search" name="q" class="filter" placeholder="Search a stop or route, e.g. Airport" autofocus>
+  <button type="submit">Search routes</button>
+</form>
+
+<div class="stats">
+  <div class="stat"><b>{{ stats.routes }}</b> routes</div>
+  <div class="stat"><b>{{ stats.buses }}</b> buses</div>
+  <div class="stat"><b>{{ stats.upcoming }}</b> upcoming bookings</div>
+</div>
+
+<p>
+  <a class="btn" href="{{ url_for('routes_list') }}">Browse routes</a>
+  <a class="btn" href="{{ url_for('buses_list') }}">Browse buses</a>
+  <a class="btn" href="{{ url_for('my_tickets') }}">My tickets</a>
+</p>
+{% endblock %}

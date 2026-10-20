@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Admin - {{ 'Edit' if pk else 'Add' }} {{ cfg.title }}{% endblock %}
+{% block content %}
+{% include "admin/_nav.html" %}
+<h1>{{ 'Edit' if pk else 'Add' }} - {{ cfg.title }}</h1>
+
+{% if errors %}
+  <ul class="errors">{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+{% endif %}
+
+{% set input_types = {'text': 'text', 'email': 'email', 'phone': 'tel', 'number': 'number', 'date': 'date'} %}
+<form method="post">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  {% for f in cfg.fields %}
+    {% set v = values.get(f.name, '') %}
+    <label class="field">{{ f.label }}
+      {% if f.type == 'select' %}
+        <select name="{{ f.name }}" required>
+          <option value="">-- choose --</option>
+          {% for o in options[f.options] %}
+            <option value="{{ o.id }}" {{ 'selected' if v|string == o.id|string }}>{{ o.label }}</option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <input name="{{ f.name }}" type="{{ input_types[f.type] }}" value="{{ v }}" required
+               {% if f.type == 'number' %}min="1" max="{{ f.maxval }}"{% endif %}
+               {% if f.maxlen %}maxlength="{{ f.maxlen }}"{% endif %}>
+      {% endif %}
+    </label>
+  {% endfor %}
+  <button type="submit">{{ 'Save changes' if pk else 'Add' }}</button>
+  <a href="{{ url_for('admin_list', key=key) }}">Cancel</a>
+</form>
+{% endblock %}

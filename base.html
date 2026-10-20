@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} - City Transit</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="{{ url_for('index') }}">City Transit</a>
+    <nav>
+      <a href="{{ url_for('routes_list') }}">Routes</a>
+      <a href="{{ url_for('buses_list') }}">Buses</a>
+      <a href="{{ url_for('my_tickets') }}">My tickets</a>
+      {% if session.get('admin') %}
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+      {% else %}
+        <a href="{{ url_for('admin_login') }}">Admin login</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p class="flash {{ category }}">{{ message }}</p>
+  {% endfor %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="wrap">Public Transport System - DBMS project (Flask + MySQL)</footer>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

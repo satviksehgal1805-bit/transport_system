@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Buses{% endblock %}
+{% block content %}
+<h1>Buses</h1>
+<p class="muted">Type to filter. Click a column title to sort. Click a row to pick a seat.</p>
+
+<input type="search" class="filter" data-filter="buses-table"
+       placeholder="Filter by bus number, route or stop...">
+
+<div class="scroll">
+<table id="buses-table">
+  <thead>
+    <tr>
+      <th data-sort>Bus number</th><th data-sort>Route</th><th data-sort>From</th>
+      <th data-sort>To</th><th data-sort="num">Seats</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for b in buses %}
+    <tr data-href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">
+      <td><a href="{{ url_for('bus_detail', bus_id=b.bus_id) }}">{{ b.bus_number }}</a></td>
+      <td><a href="{{ url_for('route_detail', route_id=b.route_id) }}">{{ b.route_name }}</a></td>
+      <td>{{ b.start_point }}</td>
+      <td>{{ b.end_point }}</td>
+      <td>{{ b.capacity }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+<p>
+  <a href="{{ url_for('admin_dashboard') }}">Dashboard</a> |
+  <a href="{{ url_for('admin_list', key='passengers') }}">Passengers</a> |
+  <a href="{{ url_for('admin_list', key='routes') }}">Routes</a> |
+  <a href="{{ url_for('admin_list', key='buses') }}">Buses</a> |
+  <a href="{{ url_for('admin_list', key='tickets') }}">Tickets</a>
+  <form method="post" action="{{ url_for('admin_logout') }}" class="inline">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button type="submit">Log out</button>
+  </form>
+</p>
